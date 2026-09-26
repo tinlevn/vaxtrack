@@ -25,7 +25,7 @@
 
   /* ========================================================================
      Tasteful Medical Light Theme (Sterile / Hospital Chart Aesthetic)
-     Clean clinical slate surfaces, medical teal & clinical blue accents
+     Clean clinical slate surfaces, medical teal & clinical status card backgrounds
      ======================================================================== */
   --clr-bg: #edf2f7;
   --clr-surface: #ffffff;
@@ -63,6 +63,16 @@
   --clr-upcoming-light: #f0f9ff;
   --clr-upcoming-text: #0369a1;
   --clr-upcoming-border: #bae6fd;
+
+  /* Full Card Backgrounds & Borders by Status (Light Mode) */
+  --clr-card-done-bg: #eaf6ef;
+  --clr-card-done-border: #a3dfbf;
+  --clr-card-overdue-bg: #fdf1f1;
+  --clr-card-overdue-border: #fca5a5;
+  --clr-card-due-soon-bg: #fffbeb;
+  --clr-card-due-soon-border: #fde68a;
+  --clr-card-upcoming-bg: #f0f7ff;
+  --clr-card-upcoming-border: #bfdbfe;
 
   /* Flat, Clean Clinical Shadows */
   --shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
@@ -111,6 +121,16 @@
   --clr-upcoming-light: rgba(56, 189, 248, 0.12);
   --clr-upcoming-text: #7dd3fc;
   --clr-upcoming-border: rgba(56, 189, 248, 0.3);
+
+  /* Full Card Backgrounds & Borders by Status (Dark Mode) */
+  --clr-card-done-bg: rgba(16, 185, 129, 0.13);
+  --clr-card-done-border: rgba(52, 211, 153, 0.35);
+  --clr-card-overdue-bg: rgba(239, 68, 68, 0.16);
+  --clr-card-overdue-border: rgba(248, 113, 113, 0.38);
+  --clr-card-due-soon-bg: rgba(245, 158, 11, 0.14);
+  --clr-card-due-soon-border: rgba(251, 191, 36, 0.35);
+  --clr-card-upcoming-bg: rgba(14, 116, 144, 0.13);
+  --clr-card-upcoming-border: rgba(56, 189, 248, 0.3);
 
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.5);
@@ -190,33 +210,33 @@ button {
 .status-pill {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 2px 8px;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
   border-radius: 0px;
   line-height: 1.3;
   white-space: nowrap;
   border: 1px solid transparent;
+  background: #ffffff;
+}
+:root[data-theme="dark"] .status-pill {
+  background: rgba(15, 23, 42, 0.85);
 }
 .status-pill.done {
-  background: var(--clr-success-light);
   color: var(--clr-success-text);
   border-color: var(--clr-success-border);
 }
 .status-pill.due-soon {
-  background: var(--clr-warning-light);
   color: var(--clr-warning-text);
   border-color: var(--clr-warning-border);
 }
 .status-pill.overdue {
-  background: var(--clr-danger-light);
   color: var(--clr-danger-text);
   border-color: var(--clr-danger-border);
 }
 .status-pill.upcoming {
-  background: var(--clr-upcoming-light);
   color: var(--clr-upcoming-text);
   border-color: var(--clr-upcoming-border);
 }
@@ -231,20 +251,21 @@ button {
   border-radius: 0px;
   padding: 3px 8px;
   border: 1px solid transparent;
+  background: #ffffff;
   transition: all 0.12s ease;
 }
+:root[data-theme="dark"] .chip {
+  background: rgba(15, 23, 42, 0.8);
+}
 .chip.given {
-  background: var(--clr-success-light);
   color: var(--clr-success-text);
   border-color: var(--clr-success-border);
 }
 .chip.missed {
-  background: var(--clr-danger-light);
   color: var(--clr-danger-text);
   border-color: var(--clr-danger-border);
 }
 .chip.pending {
-  background: var(--clr-surface-muted);
   color: var(--clr-text-muted);
   border-color: var(--clr-border);
 }

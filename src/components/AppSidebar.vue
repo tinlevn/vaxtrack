@@ -195,9 +195,8 @@ const { theme, setTheme } = useTheme()
 
 .sidebar-next-due {
   margin: 14px 16px;
-  background: var(--clr-warning-light);
-  border: 1px solid var(--clr-warning-border);
-  border-left: 4px solid var(--clr-warning);
+  background: var(--clr-card-due-soon-bg);
+  border: 1px solid var(--clr-card-due-soon-border);
   border-radius: 0px;
   padding: 12px 14px;
   cursor: pointer;
@@ -237,7 +236,6 @@ const { theme, setTheme } = useTheme()
   color: var(--clr-primary);
   font-weight: 700;
   border-color: var(--clr-primary-border);
-  border-left: 3px solid var(--clr-primary);
 }
 .nl-icon { font-size: 16px; }
 
@@ -322,3 +320,4 @@ const { theme, setTheme } = useTheme()
   border-radius: 0px;
 }
 </style>
+

@@ -76,29 +76,41 @@ defineEmits(['open'])
   display: inline-block;
   font-size: 10px; font-weight: 800;
   text-transform: uppercase; letter-spacing: .08em;
-  background: var(--clr-primary-light); color: var(--clr-primary);
-  border: 1px solid var(--clr-primary-border);
+  background: var(--clr-surface); color: var(--clr-text-muted);
+  border: 1px solid var(--clr-border);
   border-radius: 0px; padding: 2px 8px; margin-bottom: 6px;
 }
 .tl-card {
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
-  border-left: 4px solid var(--clr-border);
   border-radius: 0px;
   padding: 14px 16px;
   box-shadow: var(--shadow);
-  transition: transform .12s, box-shadow .12s, border-color .12s;
+  transition: transform .12s, box-shadow .12s, border-color .12s, background-color .12s;
 }
 .tl-card:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-card);
-  border-color: var(--clr-primary-border);
 }
 .tl-card:active { transform: scale(.99); }
-.tl-card.done     { border-left-color: var(--clr-success); }
-.tl-card.upcoming { border-left-color: var(--clr-upcoming); }
-.tl-card.overdue  { border-left-color: var(--clr-danger); }
-.tl-card.due-soon { border-left-color: var(--clr-warning); }
+
+/* Full card background colors by status — removes left-side borders */
+.tl-card.done {
+  background: var(--clr-card-done-bg);
+  border-color: var(--clr-card-done-border);
+}
+.tl-card.upcoming {
+  background: var(--clr-card-upcoming-bg);
+  border-color: var(--clr-card-upcoming-border);
+}
+.tl-card.overdue {
+  background: var(--clr-card-overdue-bg);
+  border-color: var(--clr-card-overdue-border);
+}
+.tl-card.due-soon {
+  background: var(--clr-card-due-soon-bg);
+  border-color: var(--clr-card-due-soon-border);
+}
 
 .tl-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .tl-card-title  { font-size: 15px; font-weight: 800; color: var(--clr-text); }
@@ -107,9 +119,14 @@ defineEmits(['open'])
 .tl-note {
   margin-top: 10px;
   font-size: 12px; color: var(--clr-text-muted);
-  background: var(--clr-surface-muted);
-  border: 1px solid var(--clr-border);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 0px;
   padding: 8px 10px; line-height: 1.5;
 }
+:root[data-theme="dark"] .tl-note {
+  background: rgba(0, 0, 0, 0.28);
+  border-color: rgba(255, 255, 255, 0.1);
+}
 </style>
+

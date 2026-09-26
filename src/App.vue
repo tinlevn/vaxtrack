@@ -29,31 +29,11 @@ import BottomNav  from '@/components/BottomNav.vue'
   grid-template-rows: 100dvh;
   grid-template-areas: 'sidebar main';
   min-height: 100dvh;
-  width: 100%;
-  max-width: 100%;
-  background: var(--clr-bg);
 }
 
-.app-sidebar {
-  grid-area: sidebar;
-  width: var(--sidebar-width);
-  height: 100dvh;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.app-main {
-  grid-area: main;
-  overflow-y: auto;
-  min-width: 0;
-  width: 100%;
-  background: var(--clr-bg);
-}
-
-.app-bottom-nav {
-  display: none;
-}
+.app-sidebar    { grid-area: sidebar; }
+.app-main       { grid-area: main; overflow-y: auto; }
+.app-bottom-nav { display: none; }
 
 /* Mobile: single column, bottom nav */
 @media (max-width: 767px) {

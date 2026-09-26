@@ -263,9 +263,8 @@ const pendingCount = (g) =>
 .next-due-banner {
   display: flex; align-items: center; gap: 14px;
   margin: 16px 16px 0;
-  background: var(--clr-warning-light);
-  border: 1px solid var(--clr-warning-border);
-  border-left: 4px solid var(--clr-warning);
+  background: var(--clr-card-due-soon-bg);
+  border: 1px solid var(--clr-card-due-soon-border);
   border-radius: 0px; padding: 14px 18px;
   cursor: pointer;
   transition: background .12s, box-shadow .12s;

@@ -376,9 +376,8 @@ function handleMarkAllDone() {
 /* ---- Note Box ---- */
 .note-box {
   margin: 16px 16px 0;
-  background: var(--clr-warning-light);
-  border: 1px solid var(--clr-warning-border);
-  border-left: 4px solid var(--clr-warning);
+  background: var(--clr-card-due-soon-bg);
+  border: 1px solid var(--clr-card-due-soon-border);
   border-radius: 0px;
   padding: 12px 16px;
 }
@@ -402,9 +401,8 @@ function handleMarkAllDone() {
 
 .done-banner {
   margin: 20px 16px;
-  background: var(--clr-success-light);
-  border: 1px solid var(--clr-success-border);
-  border-left: 4px solid var(--clr-success);
+  background: var(--clr-card-done-bg);
+  border: 1px solid var(--clr-card-done-border);
   border-radius: 0px;
   padding: 14px 16px;
   font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;

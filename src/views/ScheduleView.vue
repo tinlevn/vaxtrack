@@ -146,11 +146,26 @@ const visitsByGroup = (g) => visits.filter(v => v.ageGroup === g)
   transition: background .12s, border-color .12s, transform .1s;
 }
 .schedule-row:hover {
-  background: var(--clr-surface-muted);
-  border-color: var(--clr-primary-border);
   transform: translateY(-1px);
 }
 .schedule-row:focus-visible { outline: 2px solid var(--clr-primary); outline-offset: 2px; }
+
+.schedule-row.done {
+  background: var(--clr-card-done-bg);
+  border-color: var(--clr-card-done-border);
+}
+.schedule-row.upcoming {
+  background: var(--clr-card-upcoming-bg);
+  border-color: var(--clr-card-upcoming-border);
+}
+.schedule-row.overdue {
+  background: var(--clr-card-overdue-bg);
+  border-color: var(--clr-card-overdue-border);
+}
+.schedule-row.due-soon {
+  background: var(--clr-card-due-soon-bg);
+  border-color: var(--clr-card-due-soon-border);
+}
 
 .sr-box { width: 9px; height: 9px; border-radius: 0px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
 .sr-box.done     { background: var(--clr-success); border-color: var(--clr-success-border); }
