@@ -158,7 +158,7 @@
         >
           <div
             class="turn-pipe"
-            :style="{ gridColumn: row.isReversed ? 1 : 3 }"
+            :style="{ gridColumn: row.isReversed ? 1 : 4 }"
           >
             <div class="turn-pipe-line"></div>
             <div class="turn-junction">
@@ -217,18 +217,20 @@ const getGlobalSeq = (visitId, fallbackIdx) => {
 }
 
 /**
- * Snake Rows Computation (3 columns per row on desktop):
- * Row 0 (even): L-to-R (Cols 1 -> 2 -> 3)
- * Row 1 (odd):  R-to-L (Cols 3 -> 2 -> 1)
- * Row 2 (even): L-to-R (Cols 1 -> 2 -> 3)
- * Connected via downward pipes at Col 3 (turn right) and Col 1 (turn left).
+ * Snake Rows Computation (4 columns per row on desktop):
+ * Row 0 (even): L-to-R (Cols 1 -> 2 -> 3 -> 4)
+ * Row 1 (odd):  R-to-L (Cols 4 -> 3 -> 2 -> 1)
+ * Row 2 (even): L-to-R (Cols 1 -> 2 -> 3 -> 4)
+ * Row 3 (odd):  R-to-L (Cols 4 -> 3 -> 2 -> 1)
+ * Connected via downward pipes at Col 4 (turn right) and Col 1 (turn left).
  */
 const snakeRows = computed(() => {
   const result = []
   const list = filteredVisits.value
-  for (let i = 0; i < list.length; i += 3) {
-    const chunk = list.slice(i, i + 3)
-    const rowIndex = Math.floor(i / 3)
+  const cols = 4
+  for (let i = 0; i < list.length; i += cols) {
+    const chunk = list.slice(i, i + cols)
+    const rowIndex = Math.floor(i / cols)
     const isReversed = rowIndex % 2 === 1
     result.push({
       rowIndex,
@@ -238,7 +240,7 @@ const snakeRows = computed(() => {
         return {
           ...v,
           seqNumber: globalIdx > 0 ? globalIdx : (i + colIdx + 1),
-          gridCol: isReversed ? (3 - colIdx) : (colIdx + 1),
+          gridCol: isReversed ? (cols - colIdx) : (colIdx + 1),
           isLastInRow: colIdx === chunk.length - 1,
           isLastGlobal: (i + colIdx) === list.length - 1,
           flowDirection: isReversed ? 'left' : 'right',
@@ -537,9 +539,8 @@ const snakeRows = computed(() => {
   .desktop-snake-timeline {
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 0 28px 32px;
-    --snake-gap: 28px;
+    --snake-gap: 24px;
     width: 100%;
   }
 
@@ -549,7 +550,7 @@ const snakeRows = computed(() => {
     gap: 8px;
     background: var(--clr-surface);
     border: 1px solid var(--clr-border);
-    padding: 7px 12px;
+    padding: 7px 14px;
     margin-bottom: 16px;
     font-size: 10.5px;
     font-weight: 800;
@@ -557,7 +558,6 @@ const snakeRows = computed(() => {
     color: var(--clr-primary);
     box-shadow: var(--shadow);
     width: 100%;
-    max-width: calc(3 * 360px + 2 * var(--snake-gap));
   }
   .start-dot {
     color: var(--clr-success);
@@ -571,8 +571,7 @@ const snakeRows = computed(() => {
 
   .snake-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 360px));
-    justify-content: center;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     width: 100%;
     gap: var(--snake-gap);
     position: relative;
@@ -639,8 +638,7 @@ const snakeRows = computed(() => {
   /* Vertical Downward Turn Row between Snake Cycles */
   .snake-turn-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 360px));
-    justify-content: center;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     width: 100%;
     gap: var(--snake-gap);
     margin: 8px 0;
@@ -693,7 +691,6 @@ const snakeRows = computed(() => {
     letter-spacing: 0.08em;
     color: var(--clr-text-muted);
     width: 100%;
-    max-width: calc(3 * 360px + 2 * var(--snake-gap));
   }
   .end-dot {
     color: var(--clr-primary);
@@ -701,17 +698,17 @@ const snakeRows = computed(() => {
   }
 }
 
-/* 1440p Monitor & Ultra-Wide: clean proportional spacing with max-width */
+/* 1440p Monitor & Ultra-Wide: full width expansion matching stats strip */
 @container (min-width: 1380px) {
-  .desktop-header { padding: 24px 32px 0; }
-  .stats-strip    { margin: 18px 32px 0; }
-  .next-due-banner{ margin: 18px 32px 0; }
-  .timeline-header-bar { padding: 22px 32px 10px; }
-  .age-tabs       { padding: 0 32px 14px; }
+  .desktop-header { padding: 28px 36px 0; }
+  .stats-strip    { margin: 20px 36px 0; }
+  .next-due-banner{ margin: 20px 36px 0; }
+  .timeline-header-bar { padding: 24px 36px 12px; }
+  .age-tabs       { padding: 0 36px 16px; }
   .desktop-snake-timeline {
-    padding: 0 32px 32px;
-    --snake-gap: 24px;
-    max-width: 1440px;
+    padding: 0 36px 36px;
+    --snake-gap: 28px;
+    width: 100%;
   }
 }
 </style>
