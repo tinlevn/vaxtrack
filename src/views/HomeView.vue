@@ -498,7 +498,7 @@ const snakeRows = computed(() => {
   font-weight: 900;
 }
 
-/* Mobile Vertical Timeline (< 860px) */
+/* Mobile Vertical Timeline (Strictly phone screens < 600px) */
 .desktop-snake-timeline {
   display: none;
 }
@@ -509,7 +509,7 @@ const snakeRows = computed(() => {
   list-style: none;
 }
 
-/* Tablet Layout Enhancements */
+/* Tablet & Desktop Layout Enhancements (>= 600px) */
 @container (min-width: 600px) {
   .mobile-hero    { display: none; }
   .desktop-header { display: flex; }
@@ -526,11 +526,8 @@ const snakeRows = computed(() => {
   .section-label  { padding: 24px 28px 8px; }
   .age-tabs       { padding: 0 28px 14px; }
   .timeline-header-bar { padding: 24px 28px 12px; }
-  .mobile-timeline{ padding: 0 28px 24px; }
-}
 
-/* Desktop Snake Mode (@container (min-width: 860px)) */
-@container (min-width: 860px) {
+  /* Activate Snake Timeline on all desktop/tablet viewports */
   .mobile-timeline {
     display: none;
   }
@@ -541,7 +538,7 @@ const snakeRows = computed(() => {
     display: flex;
     flex-direction: column;
     padding: 0 28px 36px;
-    --snake-gap: 36px;
+    --snake-gap: 32px;
   }
 
   .snake-start-marker {
@@ -606,27 +603,27 @@ const snakeRows = computed(() => {
     top: 50%;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: var(--clr-primary);
     transform: translateY(-50%);
-    opacity: 0.65;
+    opacity: 0.85;
   }
   :root[data-theme="dark"] .conn-line {
-    opacity: 0.85;
+    opacity: 0.95;
   }
   .conn-badge {
     position: relative;
     z-index: 2;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: var(--clr-surface);
-    border: 1px solid var(--clr-primary);
+    border: 2px solid var(--clr-primary);
     display: grid;
     place-items: center;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-card);
   }
   .conn-arrow {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1;
     color: var(--clr-primary);
     font-weight: 900;
@@ -644,30 +641,30 @@ const snakeRows = computed(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 48px;
+    height: 52px;
     position: relative;
   }
   .turn-pipe-line {
     flex: 1;
-    width: 2px;
+    width: 3px;
     background: var(--clr-primary);
-    opacity: 0.65;
-  }
-  :root[data-theme="dark"] .turn-pipe-line {
     opacity: 0.85;
   }
+  :root[data-theme="dark"] .turn-pipe-line {
+    opacity: 0.95;
+  }
   .turn-junction {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background: var(--clr-surface);
-    border: 1px solid var(--clr-primary);
+    border: 2px solid var(--clr-primary);
     display: grid;
     place-items: center;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-card);
     z-index: 2;
   }
   .turn-arrow {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--clr-primary);
     font-weight: 900;
     line-height: 1;
