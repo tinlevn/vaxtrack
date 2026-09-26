@@ -30,12 +30,12 @@ const offset = computed(() => circumference.value - (props.pct / 100) * circumfe
 <style scoped>
 .ring-wrap { position: relative; flex-shrink: 0; }
 .ring-bg   { fill: none; stroke: var(--clr-primary-light); }
-.ring-val  { fill: none; stroke: var(--clr-primary); stroke-linecap: round; }
+.ring-val  { fill: none; stroke: var(--clr-primary); stroke-linecap: butt; }
 .ring-text {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
 }
-.ring-pct { font-size: 18px; font-weight: 800; color: var(--clr-primary); line-height: 1; }
-.ring-lbl { font-size: 10px; color: var(--clr-text-muted); font-weight: 600; text-transform: uppercase; }
+.ring-pct { font-size: 16px; font-weight: 800; color: var(--clr-primary); line-height: 1; font-family: var(--font-mono); }
+.ring-lbl { font-size: 9px; color: var(--clr-text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
 </style>

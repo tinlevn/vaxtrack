@@ -1,12 +1,12 @@
 <template>
   <div class="tl-item" @click="$emit('open')" @keydown.enter="$emit('open')" tabindex="0" role="listitem">
-    <!-- Left: dot + line -->
+    <!-- Left: square clinical milestone badge + line -->
     <div class="tl-left">
       <div class="tl-dot" :class="visit.status" aria-hidden="true">{{ visit.emoji }}</div>
       <div v-if="!isLast" class="tl-line"></div>
     </div>
 
-    <!-- Right: age pill + card -->
+    <!-- Right: clinical age tag + squared record card -->
     <div class="tl-right">
       <div class="tl-age-pill">{{ visit.ageGroup }}</div>
       <div class="tl-card" :class="visit.status">
@@ -27,7 +27,7 @@
             :overdue="visit.status === 'overdue'"
           />
         </div>
-        <div v-if="visit.note" class="tl-note">💡 {{ visit.note }}</div>
+        <div v-if="visit.note" class="tl-note">📋 {{ visit.note }}</div>
       </div>
     </div>
   </div>
@@ -54,15 +54,16 @@ defineEmits(['open'])
 }
 .tl-item:focus-visible .tl-card { outline: 2px solid var(--clr-primary); outline-offset: 2px; }
 
-.tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 38px; }
+.tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 36px; }
 .tl-dot {
-  width: 38px; height: 38px;
-  border-radius: 50%;
+  width: 36px; height: 36px;
+  border-radius: 0px;
   display: grid; place-items: center;
-  font-size: 18px;
-  border: 2.5px solid;
+  font-size: 17px;
+  border: 2px solid;
   flex-shrink: 0;
   position: relative; z-index: 1;
+  box-shadow: var(--shadow);
 }
 .tl-dot.done     { background: var(--clr-success-light);  border-color: var(--clr-success); }
 .tl-dot.upcoming { background: var(--clr-upcoming-light); border-color: var(--clr-upcoming); }
@@ -70,39 +71,45 @@ defineEmits(['open'])
 .tl-dot.due-soon { background: var(--clr-warning-light);  border-color: var(--clr-warning); }
 .tl-line { flex: 1; width: 2px; background: var(--clr-border); margin: 2px 0; min-height: 16px; }
 
-.tl-right { flex: 1; padding-bottom: 18px; }
+.tl-right { flex: 1; min-width: 0; padding-bottom: 20px; }
 .tl-age-pill {
   display: inline-block;
-  font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .06em;
+  font-size: 10px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .08em;
   background: var(--clr-primary-light); color: var(--clr-primary);
-  border-radius: 100px; padding: 2px 10px; margin-bottom: 8px;
+  border: 1px solid var(--clr-primary-border);
+  border-radius: 0px; padding: 2px 8px; margin-bottom: 6px;
 }
 .tl-card {
   background: var(--clr-surface);
-  border: 1.5px solid var(--clr-border);
-  border-radius: var(--radius);
+  border: 1px solid var(--clr-border);
+  border-left: 4px solid var(--clr-border);
+  border-radius: 0px;
   padding: 14px 16px;
   box-shadow: var(--shadow);
-  transition: transform .15s, box-shadow .15s;
-  border-left-width: 4px;
+  transition: transform .12s, box-shadow .12s, border-color .12s;
 }
-.tl-card:hover  { transform: translateY(-1px); box-shadow: var(--shadow-card); }
-.tl-card:active { transform: scale(.98); box-shadow: none; }
+.tl-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--clr-primary-border);
+}
+.tl-card:active { transform: scale(.99); }
 .tl-card.done     { border-left-color: var(--clr-success); }
 .tl-card.upcoming { border-left-color: var(--clr-upcoming); }
 .tl-card.overdue  { border-left-color: var(--clr-danger); }
 .tl-card.due-soon { border-left-color: var(--clr-warning); }
 
 .tl-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-.tl-card-title  { font-size: 15px; font-weight: 700; }
-.tl-card-meta   { font-size: 12px; color: var(--clr-text-muted); display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.tl-card-title  { font-size: 15px; font-weight: 800; color: var(--clr-text); }
+.tl-card-meta   { font-size: 12px; color: var(--clr-text-muted); display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; font-weight: 500; }
 .tl-chips       { display: flex; flex-wrap: wrap; gap: 6px; }
 .tl-note {
   margin-top: 10px;
   font-size: 12px; color: var(--clr-text-muted);
-  background: var(--clr-bg);
-  border-radius: var(--radius-sm);
+  background: var(--clr-surface-muted);
+  border: 1px solid var(--clr-border);
+  border-radius: 0px;
   padding: 8px 10px; line-height: 1.5;
 }
 </style>
