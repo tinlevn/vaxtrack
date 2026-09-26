@@ -120,7 +120,7 @@ const pad = (n) => String(n).padStart(2, '0')
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
   border-radius: 0px;
-  padding: 8px 10px;
+  padding: 12px 14px;
   box-shadow: var(--shadow);
   cursor: pointer;
   display: flex;
@@ -165,20 +165,20 @@ const pad = (n) => String(n).padStart(2, '0')
 .sc-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 5px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 .sc-anchor-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
-  padding: 1px 5px;
+  padding: 3px 7px;
   border-radius: 0px;
   font-family: var(--font-mono);
   font-weight: 800;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: -0.02em;
   box-shadow: var(--shadow);
   flex-shrink: 0;
@@ -207,7 +207,7 @@ const pad = (n) => String(n).padStart(2, '0')
   font-weight: 900;
 }
 .sc-emoji {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .sc-title-block {
@@ -215,7 +215,7 @@ const pad = (n) => String(n).padStart(2, '0')
   min-width: 0;
 }
 .sc-visit-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--clr-text);
   white-space: nowrap;
@@ -225,7 +225,7 @@ const pad = (n) => String(n).padStart(2, '0')
   line-height: 1.2;
 }
 .sc-cohort-tag {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -242,11 +242,11 @@ const pad = (n) => String(n).padStart(2, '0')
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--clr-text-muted);
-  margin-bottom: 5px;
-  padding-bottom: 4px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 :root[data-theme="dark"] .sc-meta-row {
@@ -260,28 +260,28 @@ const pad = (n) => String(n).padStart(2, '0')
 .sc-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
   align-content: flex-start;
 }
 .sc-chips :deep(.chip) {
-  padding: 1px 5px;
-  font-size: 10px;
+  padding: 2px 7px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.4;
 }
 
 /* Note */
 .sc-note {
-  margin-top: 5px;
-  font-size: 10px;
-  line-height: 1.35;
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.4;
   color: var(--clr-text-muted);
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(0, 0, 0, 0.07);
-  padding: 3px 6px;
+  padding: 5px 8px;
   display: flex;
-  gap: 4px;
+  gap: 5px;
   border-radius: 0px;
 }
 :root[data-theme="dark"] .sc-note {
@@ -290,7 +290,7 @@ const pad = (n) => String(n).padStart(2, '0')
 }
 .sc-note-icon {
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* ==========================================================================

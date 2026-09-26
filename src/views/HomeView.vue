@@ -537,9 +537,9 @@ const snakeRows = computed(() => {
   .desktop-snake-timeline {
     display: flex;
     flex-direction: column;
-    padding: 0 28px 28px;
-    --snake-gap: 22px;
-    max-width: 1400px;
+    align-items: center;
+    padding: 0 28px 32px;
+    --snake-gap: 28px;
     width: 100%;
   }
 
@@ -549,13 +549,15 @@ const snakeRows = computed(() => {
     gap: 8px;
     background: var(--clr-surface);
     border: 1px solid var(--clr-border);
-    padding: 6px 12px;
-    margin-bottom: 14px;
-    font-size: 10px;
+    padding: 7px 12px;
+    margin-bottom: 16px;
+    font-size: 10.5px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--clr-primary);
     box-shadow: var(--shadow);
+    width: 100%;
+    max-width: calc(3 * 360px + 2 * var(--snake-gap));
   }
   .start-dot {
     color: var(--clr-success);
@@ -569,7 +571,9 @@ const snakeRows = computed(() => {
 
   .snake-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 360px));
+    justify-content: center;
+    width: 100%;
     gap: var(--snake-gap);
     position: relative;
     align-items: stretch;
@@ -586,7 +590,7 @@ const snakeRows = computed(() => {
   /* Horizontal Snake Connectors between cards */
   .snake-h-connector {
     position: absolute;
-    top: 18px;
+    top: 24px;
     width: var(--snake-gap);
     height: 20px;
     display: flex;
@@ -635,7 +639,9 @@ const snakeRows = computed(() => {
   /* Vertical Downward Turn Row between Snake Cycles */
   .snake-turn-row {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 360px));
+    justify-content: center;
+    width: 100%;
     gap: var(--snake-gap);
     margin: 8px 0;
   }
@@ -644,7 +650,7 @@ const snakeRows = computed(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 36px;
+    height: 38px;
     position: relative;
   }
   .turn-pipe-line {
@@ -686,6 +692,8 @@ const snakeRows = computed(() => {
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--clr-text-muted);
+    width: 100%;
+    max-width: calc(3 * 360px + 2 * var(--snake-gap));
   }
   .end-dot {
     color: var(--clr-primary);
