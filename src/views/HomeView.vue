@@ -121,7 +121,7 @@
             v-for="item in row.visits"
             :key="item.id"
             class="snake-col"
-            :style="{ gridColumn: item.gridCol }"
+            :style="{ gridColumn: item.gridCol, gridRow: 1 }"
           >
             <TimelineCard
               :visit="item"
@@ -574,6 +574,7 @@ const snakeRows = computed(() => {
   }
 
   .snake-col {
+    grid-row: 1;
     position: relative;
     min-width: 0;
     display: flex;
