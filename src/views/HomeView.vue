@@ -96,12 +96,93 @@
       </button>
     </div>
 
-    <!-- Timeline chart -->
-    <div class="section-label">CHRONOLOGICAL VISIT TIMELINE</div>
-    <ol class="timeline" role="list" aria-label="Vaccination timeline">
+    <!-- Timeline header & navigation legend -->
+    <div class="timeline-header-bar">
+      <div class="section-label-inner">CHRONOLOGICAL VISIT TIMELINE</div>
+      <div class="snake-flow-legend" aria-hidden="true">
+        <span class="legend-pill"><span class="legend-arrow">►</span> EASTBOUND</span>
+        <span class="legend-pill"><span class="legend-arrow">▼</span> NEXT CYCLE</span>
+        <span class="legend-pill"><span class="legend-arrow">◄</span> WESTBOUND</span>
+      </div>
+    </div>
+
+    <!-- DESKTOP SNAKE TIMELINE (>= 860px) -->
+    <div class="desktop-snake-timeline" role="region" aria-label="Sequential snake vaccination timeline">
+      <div class="snake-start-marker">
+        <span class="start-dot">●</span>
+        <span class="start-text">CLINICAL SEQUENCE START · AT BIRTH RECORD</span>
+        <span class="start-arrow">►</span>
+      </div>
+
+      <template v-for="(row, rIdx) in snakeRows" :key="row.rowIndex">
+        <!-- Row of 3 Cards -->
+        <div class="snake-row" :class="{ 'row-reversed': row.isReversed }">
+          <div
+            v-for="item in row.visits"
+            :key="item.id"
+            class="snake-col"
+            :style="{ gridColumn: item.gridCol }"
+          >
+            <TimelineCard
+              :visit="item"
+              :seqNumber="item.seqNumber"
+              mode="snake"
+              :flowDirection="item.flowDirection"
+              :isLastInRow="item.isLastInRow"
+              :isLastGlobal="item.isLastGlobal"
+              @open="router.push({ name: 'detail', params: { id: item.id } })"
+              class="fade-in"
+            />
+
+            <!-- Horizontal connector arrow between items in this row -->
+            <div
+              v-if="!item.isLastInRow && !item.isLastGlobal"
+              class="snake-h-connector"
+              :class="item.flowDirection === 'right' ? 'conn-right' : 'conn-left'"
+              aria-hidden="true"
+            >
+              <div class="conn-line"></div>
+              <div class="conn-badge">
+                <span class="conn-arrow">{{ item.flowDirection === 'right' ? '▶' : '◀' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Downward turn connector between rows -->
+        <div
+          v-if="rIdx < snakeRows.length - 1"
+          class="snake-turn-row"
+          :class="row.isReversed ? 'turn-from-left' : 'turn-from-right'"
+          aria-hidden="true"
+        >
+          <div
+            class="turn-pipe"
+            :style="{ gridColumn: row.isReversed ? 1 : 3 }"
+          >
+            <div class="turn-pipe-line"></div>
+            <div class="turn-junction">
+              <span class="turn-arrow">▼</span>
+            </div>
+            <div class="turn-pipe-line"></div>
+          </div>
+        </div>
+      </template>
+
+      <div class="snake-end-marker">
+        <span class="end-dot">■</span>
+        <span class="end-text">CHRONOLOGICAL HORIZON REACHED · 13 MILESTONE PROTOCOL</span>
+      </div>
+    </div>
+
+    <!-- MOBILE VERTICAL TIMELINE (< 860px) -->
+    <ol class="mobile-timeline" role="list" aria-label="Vertical vaccination timeline">
       <TimelineCard
-        v-for="(visit, i) in filteredVisits" :key="visit.id"
-        :visit="visit" :isLast="i === filteredVisits.length - 1"
+        v-for="(visit, i) in filteredVisits" :key="'mob-' + visit.id"
+        :visit="visit"
+        :seqNumber="getGlobalSeq(visit.id, i)"
+        :isLast="i === filteredVisits.length - 1"
+        mode="vertical"
         @open="router.push({ name: 'detail', params: { id: visit.id } })"
         class="fade-in"
       />
@@ -129,6 +210,44 @@ const filteredVisits = computed(() =>
 )
 const pendingCount = (g) =>
   visits.filter(v => (g === 'All' || v.ageGroup === g) && v.status !== 'done').length
+
+const getGlobalSeq = (visitId, fallbackIdx) => {
+  const idx = visits.findIndex(v => v.id === visitId)
+  return idx >= 0 ? idx + 1 : fallbackIdx + 1
+}
+
+/**
+ * Snake Rows Computation (3 columns per row on desktop):
+ * Row 0 (even): L-to-R (Cols 1 -> 2 -> 3)
+ * Row 1 (odd):  R-to-L (Cols 3 -> 2 -> 1)
+ * Row 2 (even): L-to-R (Cols 1 -> 2 -> 3)
+ * Connected via downward pipes at Col 3 (turn right) and Col 1 (turn left).
+ */
+const snakeRows = computed(() => {
+  const result = []
+  const list = filteredVisits.value
+  for (let i = 0; i < list.length; i += 3) {
+    const chunk = list.slice(i, i + 3)
+    const rowIndex = Math.floor(i / 3)
+    const isReversed = rowIndex % 2 === 1
+    result.push({
+      rowIndex,
+      isReversed,
+      visits: chunk.map((v, colIdx) => {
+        const globalIdx = visits.findIndex(item => item.id === v.id) + 1
+        return {
+          ...v,
+          seqNumber: globalIdx > 0 ? globalIdx : (i + colIdx + 1),
+          gridCol: isReversed ? (3 - colIdx) : (colIdx + 1),
+          isLastInRow: colIdx === chunk.length - 1,
+          isLastGlobal: (i + colIdx) === list.length - 1,
+          flowDirection: isReversed ? 'left' : 'right',
+        }
+      })
+    })
+  }
+  return result
+})
 </script>
 
 <style scoped>
@@ -342,14 +461,55 @@ const pendingCount = (g) =>
   background: rgba(255,255,255,.3);
 }
 
-.timeline {
+/* Timeline Header Bar & Legend */
+.timeline-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 16px 10px;
+}
+.section-label-inner {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--clr-text-subtle);
+}
+.snake-flow-legend {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-muted);
+  box-shadow: var(--shadow);
+}
+.legend-arrow {
+  color: var(--clr-primary);
+  font-weight: 900;
+}
+
+/* Mobile Vertical Timeline (< 860px) */
+.desktop-snake-timeline {
+  display: none;
+}
+.mobile-timeline {
   display: flex;
   flex-direction: column;
-  padding: 0 16px 20px;
+  padding: 0 16px 24px;
   list-style: none;
 }
 
-/* Tablet & Desktop */
+/* Tablet Layout Enhancements */
 @container (min-width: 600px) {
   .mobile-hero    { display: none; }
   .desktop-header { display: flex; }
@@ -365,33 +525,184 @@ const pendingCount = (g) =>
   .ndb-action     { display: flex; }
   .section-label  { padding: 24px 28px 8px; }
   .age-tabs       { padding: 0 28px 14px; }
-  .timeline       { padding: 0 28px 20px; }
+  .timeline-header-bar { padding: 24px 28px 12px; }
+  .mobile-timeline{ padding: 0 28px 24px; }
 }
 
-/* Medium Desktop: 2-column grid */
-@container (min-width: 900px) {
-  .timeline { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 20px; }
+/* Desktop Snake Mode (@container (min-width: 860px)) */
+@container (min-width: 860px) {
+  .mobile-timeline {
+    display: none;
+  }
+  .snake-flow-legend {
+    display: flex;
+  }
+  .desktop-snake-timeline {
+    display: flex;
+    flex-direction: column;
+    padding: 0 28px 36px;
+    --snake-gap: 36px;
+  }
+
+  .snake-start-marker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    padding: 8px 14px;
+    margin-bottom: 22px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--clr-primary);
+    box-shadow: var(--shadow);
+  }
+  .start-dot {
+    color: var(--clr-success);
+    font-size: 13px;
+  }
+  .start-arrow {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--clr-primary);
+  }
+
+  .snake-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--snake-gap);
+    position: relative;
+    align-items: stretch;
+  }
+
+  .snake-col {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Horizontal Snake Connectors between cards */
+  .snake-h-connector {
+    position: absolute;
+    top: 34px;
+    width: var(--snake-gap);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .snake-h-connector.conn-right {
+    right: calc(-1 * var(--snake-gap));
+  }
+  .snake-h-connector.conn-left {
+    left: calc(-1 * var(--snake-gap));
+  }
+  .conn-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--clr-primary);
+    transform: translateY(-50%);
+    opacity: 0.65;
+  }
+  :root[data-theme="dark"] .conn-line {
+    opacity: 0.85;
+  }
+  .conn-badge {
+    position: relative;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-primary);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow);
+  }
+  .conn-arrow {
+    font-size: 10px;
+    line-height: 1;
+    color: var(--clr-primary);
+    font-weight: 900;
+  }
+
+  /* Vertical Downward Turn Row between Snake Cycles */
+  .snake-turn-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--snake-gap);
+    margin: 12px 0;
+  }
+  .turn-pipe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    position: relative;
+  }
+  .turn-pipe-line {
+    flex: 1;
+    width: 2px;
+    background: var(--clr-primary);
+    opacity: 0.65;
+  }
+  :root[data-theme="dark"] .turn-pipe-line {
+    opacity: 0.85;
+  }
+  .turn-junction {
+    width: 28px;
+    height: 28px;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-primary);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow);
+    z-index: 2;
+  }
+  .turn-arrow {
+    font-size: 11px;
+    color: var(--clr-primary);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .snake-end-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    margin-top: 24px;
+    background: var(--clr-surface-muted);
+    border: 1px dashed var(--clr-border-strong);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--clr-text-muted);
+  }
+  .end-dot {
+    color: var(--clr-primary);
+    font-size: 12px;
+  }
 }
 
-/* Wide / 1440p Monitor: 3-column timeline grid */
+/* 1440p Monitor & Ultra-Wide: larger paddings & generous spacing */
 @container (min-width: 1380px) {
   .desktop-header { padding: 28px 36px 0; }
   .stats-strip    { margin: 20px 36px 0; }
   .next-due-banner{ margin: 20px 36px 0; }
-  .section-label  { padding: 26px 36px 10px; }
+  .timeline-header-bar { padding: 26px 36px 12px; }
   .age-tabs       { padding: 0 36px 16px; }
-  .timeline       {
-    padding: 0 36px 24px;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0 22px;
-  }
-}
-
-/* Ultra-wide Displays: 4-column timeline grid */
-@container (min-width: 1950px) {
-  .timeline {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0 24px;
+  .desktop-snake-timeline {
+    padding: 0 36px 40px;
+    --snake-gap: 40px;
   }
 }
 </style>
