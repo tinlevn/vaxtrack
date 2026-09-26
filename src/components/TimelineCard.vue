@@ -47,12 +47,6 @@
       <span class="sc-note-icon">📋</span>
       <span class="sc-note-text">{{ visit.note }}</span>
     </div>
-
-    <!-- Bottom Action Ribbon -->
-    <div class="sc-action-bar">
-      <span class="sc-action-hint">CLINICAL LOG</span>
-      <span class="sc-action-arrow">VIEW DETAILS ›</span>
-    </div>
   </div>
 
   <!-- MOBILE VERTICAL MODE -->
@@ -126,7 +120,7 @@ const pad = (n) => String(n).padStart(2, '0')
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
   border-radius: 0px;
-  padding: 16px 18px;
+  padding: 8px 10px;
   box-shadow: var(--shadow);
   cursor: pointer;
   display: flex;
@@ -171,20 +165,20 @@ const pad = (n) => String(n).padStart(2, '0')
 .sc-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 5px;
 }
 .sc-anchor-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
-  padding: 4px 8px;
+  padding: 1px 5px;
   border-radius: 0px;
   font-family: var(--font-mono);
   font-weight: 800;
-  font-size: 13px;
+  font-size: 11px;
   letter-spacing: -0.02em;
   box-shadow: var(--shadow);
   flex-shrink: 0;
@@ -213,7 +207,7 @@ const pad = (n) => String(n).padStart(2, '0')
   font-weight: 900;
 }
 .sc-emoji {
-  font-size: 15px;
+  font-size: 12px;
 }
 
 .sc-title-block {
@@ -221,20 +215,22 @@ const pad = (n) => String(n).padStart(2, '0')
   min-width: 0;
 }
 .sc-visit-name {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--clr-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 .sc-cohort-tag {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--clr-text-muted);
+  line-height: 1.1;
 }
 .sc-status {
   flex-shrink: 0;
@@ -245,12 +241,12 @@ const pad = (n) => String(n).padStart(2, '0')
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--clr-text-muted);
-  margin-bottom: 12px;
-  padding-bottom: 10px;
+  margin-bottom: 5px;
+  padding-bottom: 4px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 :root[data-theme="dark"] .sc-meta-row {
@@ -264,22 +260,28 @@ const pad = (n) => String(n).padStart(2, '0')
 .sc-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 3px;
   flex: 1;
   align-content: flex-start;
+}
+.sc-chips :deep(.chip) {
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 /* Note */
 .sc-note {
-  margin-top: 12px;
-  font-size: 11px;
-  line-height: 1.45;
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.35;
   color: var(--clr-text-muted);
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(0, 0, 0, 0.07);
-  padding: 8px 10px;
+  padding: 3px 6px;
   display: flex;
-  gap: 6px;
+  gap: 4px;
   border-radius: 0px;
 }
 :root[data-theme="dark"] .sc-note {
@@ -288,28 +290,7 @@ const pad = (n) => String(n).padStart(2, '0')
 }
 .sc-note-icon {
   flex-shrink: 0;
-  font-size: 13px;
-}
-
-/* Footer Ribbon */
-.sc-action-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.12);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: var(--clr-text-subtle);
-}
-:root[data-theme="dark"] .sc-action-bar {
-  border-top-color: rgba(255, 255, 255, 0.12);
-}
-.sc-action-arrow {
-  color: var(--clr-primary);
-  font-weight: 800;
+  font-size: 11px;
 }
 
 /* ==========================================================================

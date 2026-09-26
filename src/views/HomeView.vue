@@ -537,19 +537,21 @@ const snakeRows = computed(() => {
   .desktop-snake-timeline {
     display: flex;
     flex-direction: column;
-    padding: 0 28px 36px;
-    --snake-gap: 32px;
+    padding: 0 28px 28px;
+    --snake-gap: 22px;
+    max-width: 1400px;
+    width: 100%;
   }
 
   .snake-start-marker {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: var(--clr-surface);
     border: 1px solid var(--clr-border);
-    padding: 8px 14px;
-    margin-bottom: 22px;
-    font-size: 11px;
+    padding: 6px 12px;
+    margin-bottom: 14px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--clr-primary);
@@ -557,11 +559,11 @@ const snakeRows = computed(() => {
   }
   .start-dot {
     color: var(--clr-success);
-    font-size: 13px;
+    font-size: 12px;
   }
   .start-arrow {
     margin-left: auto;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--clr-primary);
   }
 
@@ -584,9 +586,9 @@ const snakeRows = computed(() => {
   /* Horizontal Snake Connectors between cards */
   .snake-h-connector {
     position: absolute;
-    top: 34px;
+    top: 18px;
     width: var(--snake-gap);
-    height: 24px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -615,16 +617,16 @@ const snakeRows = computed(() => {
   .conn-badge {
     position: relative;
     z-index: 2;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background: var(--clr-surface);
     border: 2px solid var(--clr-primary);
     display: grid;
     place-items: center;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow);
   }
   .conn-arrow {
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1;
     color: var(--clr-primary);
     font-weight: 900;
@@ -635,14 +637,14 @@ const snakeRows = computed(() => {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--snake-gap);
-    margin: 12px 0;
+    margin: 8px 0;
   }
   .turn-pipe {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 52px;
+    height: 36px;
     position: relative;
   }
   .turn-pipe-line {
@@ -655,17 +657,17 @@ const snakeRows = computed(() => {
     opacity: 0.95;
   }
   .turn-junction {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     background: var(--clr-surface);
     border: 2px solid var(--clr-primary);
     display: grid;
     place-items: center;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow);
     z-index: 2;
   }
   .turn-arrow {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--clr-primary);
     font-weight: 900;
     line-height: 1;
@@ -676,31 +678,32 @@ const snakeRows = computed(() => {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px;
-    margin-top: 24px;
+    padding: 10px;
+    margin-top: 18px;
     background: var(--clr-surface-muted);
     border: 1px dashed var(--clr-border-strong);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--clr-text-muted);
   }
   .end-dot {
     color: var(--clr-primary);
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
-/* 1440p Monitor & Ultra-Wide: larger paddings & generous spacing */
+/* 1440p Monitor & Ultra-Wide: clean proportional spacing with max-width */
 @container (min-width: 1380px) {
-  .desktop-header { padding: 28px 36px 0; }
-  .stats-strip    { margin: 20px 36px 0; }
-  .next-due-banner{ margin: 20px 36px 0; }
-  .timeline-header-bar { padding: 26px 36px 12px; }
-  .age-tabs       { padding: 0 36px 16px; }
+  .desktop-header { padding: 24px 32px 0; }
+  .stats-strip    { margin: 18px 32px 0; }
+  .next-due-banner{ margin: 18px 32px 0; }
+  .timeline-header-bar { padding: 22px 32px 10px; }
+  .age-tabs       { padding: 0 32px 14px; }
   .desktop-snake-timeline {
-    padding: 0 36px 40px;
-    --snake-gap: 40px;
+    padding: 0 32px 32px;
+    --snake-gap: 24px;
+    max-width: 1440px;
   }
 }
 </style>
