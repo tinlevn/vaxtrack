@@ -16,37 +16,77 @@
       </button>
     </div>
 
-    <div v-for="group in ageGroups.slice(1)" :key="group" class="group-section">
-      <div class="group-header">
-        <h2 class="group-title">{{ group }}</h2>
-        <span class="group-badge">{{ visitsByGroup(group).length }} VISITS</span>
+    <!-- Filter Console -->
+    <div class="filter-console">
+      <div class="fc-search">
+        <span class="fc-search-icon">🔍</span>
+        <input
+          v-model="searchQuery"
+          type="search"
+          placeholder="Search schedule by vaccine, disease, or note..."
+          class="fc-input"
+          aria-label="Search schedule"
+        />
+        <button v-if="searchQuery" class="fc-clear-btn" @click="searchQuery = ''">✕</button>
       </div>
-      <div class="group-rows">
-        <div
-          v-for="visit in visitsByGroup(group)"
-          :key="visit.id"
-          class="schedule-row"
-          role="button"
-          tabindex="0"
-          @click="router.push({ name: 'detail', params: { id: visit.id } })"
-          @keydown.enter="router.push({ name: 'detail', params: { id: visit.id } })"
+
+      <div class="fc-status-group" role="group" aria-label="Filter by status">
+        <button
+          v-for="s in statusOptions"
+          :key="s.value"
+          class="fc-status-btn"
+          :class="[s.value, { active: statusFilter === s.value }]"
+          @click="statusFilter = s.value"
         >
-          <span class="sr-box" :class="visit.status"></span>
-          <div class="sr-body">
-            <div class="sr-age">{{ visit.emoji }} {{ visit.ageLabel }}</div>
-            <div class="sr-vax">{{ visit.vaccines.map(v => v.key).join(' · ') }}</div>
-          </div>
-          <div class="sr-right">
-            <div class="sr-date">{{ fmtDateShort(visit.targetDate) }}</div>
-            <StatusPill :status="visit.status" />
+          <span class="fc-dot"></span>
+          <span>{{ s.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div v-for="group in ageGroups.slice(1)" :key="group" class="group-section">
+      <template v-if="visitsByGroup(group).length > 0">
+        <div class="group-header">
+          <h2 class="group-title">{{ group }}</h2>
+          <span class="group-badge">{{ visitsByGroup(group).length }} VISITS</span>
+        </div>
+        <div class="group-rows">
+          <div
+            v-for="visit in visitsByGroup(group)"
+            :key="visit.id"
+            class="schedule-row"
+            role="button"
+            tabindex="0"
+            @click="router.push({ name: 'detail', params: { id: visit.id } })"
+            @keydown.enter="router.push({ name: 'detail', params: { id: visit.id } })"
+          >
+            <span class="sr-box" :class="visit.status"></span>
+            <div class="sr-body">
+              <div class="sr-age">{{ visit.emoji }} {{ visit.ageLabel }}</div>
+              <div class="sr-vax">{{ visit.vaccines.map(v => v.key).join(' · ') }}</div>
+              <div v-if="visit.customNote" class="sr-custom-note">📝 {{ visit.customNote }}</div>
+            </div>
+            <div class="sr-right">
+              <div class="sr-date">{{ fmtDateShort(visit.targetDate) }}</div>
+              <StatusPill :status="visit.status" />
+            </div>
           </div>
         </div>
-      </div>
+      </template>
+    </div>
+
+    <!-- Empty Search Result -->
+    <div v-if="totalMatchingVisits === 0" class="empty-schedule-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No Matching Schedule Entries</div>
+      <div class="empty-sub">Adjust your query or clear the status filter to see more visits.</div>
+      <button class="empty-reset-btn" @click="resetFilters">RESET FILTERS</button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSchedule } from '@/composables/useSchedule.js'
 import { useTheme } from '@/composables/useTheme.js'
@@ -54,10 +94,24 @@ import { fmtDateShort } from '@/composables/useFormatters.js'
 import StatusPill from '@/components/StatusPill.vue'
 
 const router = useRouter()
-const { visits, totalVisits, ageGroups } = useSchedule()
+const { visits, totalVisits, ageGroups, searchQuery, statusFilter, filterVisits } = useSchedule()
 const { toggleTheme, isDark } = useTheme()
 
-const visitsByGroup = (g) => visits.filter(v => v.ageGroup === g)
+const statusOptions = [
+  { value: 'all', label: 'All Status' },
+  { value: 'done', label: 'Done' },
+  { value: 'due-soon', label: 'Due Soon / Overdue' },
+  { value: 'upcoming', label: 'Upcoming' },
+]
+
+const visitsByGroup = (g) => filterVisits(visits, g)
+
+const totalMatchingVisits = computed(() => filterVisits(visits, 'All').length)
+
+function resetFilters() {
+  searchQuery.value = ''
+  statusFilter.value = 'all'
+}
 </script>
 
 <style scoped>
@@ -107,7 +161,101 @@ const visitsByGroup = (g) => visits.filter(v => v.ageGroup === g)
   background: rgba(255, 255, 255, 0.28);
 }
 
-.group-section { margin: 0 16px 24px; }
+/* Filter Console */
+.filter-console {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 16px 8px;
+}
+
+.fc-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.fc-search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 14px;
+  color: var(--clr-text-muted);
+  pointer-events: none;
+}
+.fc-input {
+  width: 100%;
+  padding: 10px 36px 10px 36px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text);
+  border-radius: 0px;
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+  box-shadow: var(--shadow);
+}
+.fc-input:focus {
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 2px var(--clr-primary-light);
+}
+.fc-clear-btn {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--clr-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.fc-status-group {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fc-status-group::-webkit-scrollbar { display: none; }
+
+.fc-status-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: 0px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .12s ease;
+}
+.fc-status-btn:hover {
+  background: var(--clr-surface-muted);
+  color: var(--clr-text);
+}
+.fc-status-btn.active {
+  background: var(--clr-surface);
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+  font-weight: 800;
+  box-shadow: var(--shadow);
+}
+.fc-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--clr-text-subtle);
+  border-radius: 0px;
+}
+.fc-status-btn.done .fc-dot { background: var(--clr-success); }
+.fc-status-btn.due-soon .fc-dot { background: var(--clr-warning); }
+.fc-status-btn.upcoming .fc-dot { background: var(--clr-upcoming); }
+
+.group-section { margin: 0 16px 20px; }
 .group-header {
   display: flex;
   align-items: center;
@@ -176,13 +324,48 @@ const visitsByGroup = (g) => visits.filter(v => v.ageGroup === g)
 .sr-body  { flex: 1; min-width: 0; }
 .sr-age   { font-size: 14px; font-weight: 800; color: var(--clr-text); }
 .sr-vax   { font-size: 11px; color: var(--clr-text-muted); margin-top: 2px; }
+.sr-custom-note { font-size: 11px; color: var(--clr-primary); font-weight: 600; margin-top: 3px; }
 
 .sr-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 .sr-date  { font-size: 11px; color: var(--clr-text-muted); font-weight: 600; font-family: var(--font-mono); }
 
+.empty-schedule-state {
+  margin: 30px 16px;
+  padding: 32px 20px;
+  background: var(--clr-surface);
+  border: 1px dashed var(--clr-border-strong);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.empty-icon { font-size: 32px; }
+.empty-title { font-size: 15px; font-weight: 800; color: var(--clr-text); }
+.empty-sub { font-size: 12px; color: var(--clr-text-muted); }
+.empty-reset-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: var(--clr-primary-light);
+  border: 1px solid var(--clr-primary);
+  color: var(--clr-primary);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
 @container (min-width: 600px) {
   .view-header { padding: 26px 32px 20px; }
   .view-title  { font-size: 24px; }
+  .filter-console {
+    margin: 18px 32px 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fc-search { max-width: 380px; }
   .group-section { margin: 0 32px 26px; }
   .group-rows {
     display: grid;
@@ -193,6 +376,7 @@ const visitsByGroup = (g) => visits.filter(v => v.ageGroup === g)
 
 @container (min-width: 1250px) {
   .view-header { padding: 30px 40px 24px; }
+  .filter-console { margin: 20px 40px 12px; }
   .group-section { margin: 0 40px 30px; }
   .group-rows {
     grid-template-columns: repeat(3, 1fr);

@@ -115,11 +115,32 @@
       </div>
     </section>
 
-    <!-- Clinical Physician Note -->
+    <!-- Clinical Protocol Directive -->
     <div v-if="visit.note" class="note-box">
       <div class="note-tag">CLINICAL DIRECTIVE</div>
       <p class="note-body">📋 {{ visit.note }}</p>
     </div>
+
+    <!-- Parent & Provider Custom Visit Notes -->
+    <section class="section custom-notes-section">
+      <div class="section-header">
+        <h2 class="section-title">📝 Parent & Provider Visit Notes</h2>
+        <p class="section-hint">Record appointment observations, reactions, or doctor instructions for this visit</p>
+      </div>
+      <div class="notes-input-card">
+        <textarea
+          v-model="noteInput"
+          @input="handleSaveCustomNote"
+          placeholder="Type notes here (e.g. 'Baby had mild fever after visit', 'Doctor recommended Tylenol', etc.)"
+          class="cn-textarea"
+          rows="3"
+        ></textarea>
+        <div class="cn-footer">
+          <span v-if="savedFeedback" class="cn-saved-tag">✓ Saved to record</span>
+          <span class="cn-hint">Notes automatically save as you type</span>
+        </div>
+      </div>
+    </section>
 
     <!-- Administration Actions -->
     <div v-if="visit.status !== 'done'" class="cta-wrap">
@@ -141,7 +162,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSchedule } from '@/composables/useSchedule.js'
 import { useTheme } from '@/composables/useTheme.js'
@@ -151,11 +172,21 @@ import StatusPill from '@/components/StatusPill.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const router = useRouter()
-const { visits, getVisit, markVisitDone, toggleVaccine } = useSchedule()
+const { visits, getVisit, markVisitDone, toggleVaccine, updateCustomNote } = useSchedule()
 const { toggleTheme, isDark } = useTheme()
 
 const visit   = computed(() => getVisit(props.id))
 const vaxInfo = VAX_INFO
+
+const noteInput = ref(visit.value?.customNote || '')
+const savedFeedback = ref(false)
+let saveTimeout = null
+
+watch(() => visit.value?.customNote, (newVal) => {
+  if (newVal !== noteInput.value) {
+    noteInput.value = newVal || ''
+  }
+})
 
 const nextVisit = computed(() =>
   visits.find(v => v.status !== 'done' && v.targetDate > (visit.value?.targetDate ?? new Date())) ?? null
@@ -173,6 +204,15 @@ function handleToggle(vaxKey) {
 
 function handleMarkAllDone() {
   markVisitDone(props.id)
+}
+
+function handleSaveCustomNote() {
+  updateCustomNote(props.id, noteInput.value)
+  savedFeedback.value = true
+  if (saveTimeout) clearTimeout(saveTimeout)
+  saveTimeout = setTimeout(() => {
+    savedFeedback.value = false
+  }, 2000)
 }
 </script>
 
@@ -383,6 +423,39 @@ function handleMarkAllDone() {
 }
 .note-tag  { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--clr-warning-text); margin-bottom: 2px; }
 .note-body { font-size: 12px; color: var(--clr-warning-text); line-height: 1.5; font-weight: 600; }
+
+/* ---- Custom Notes Input ---- */
+.custom-notes-section { margin-top: 10px; }
+.notes-input-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  padding: 12px;
+  box-shadow: var(--shadow);
+}
+.cn-textarea {
+  width: 100%;
+  background: var(--clr-surface-muted);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px;
+  resize: vertical;
+  outline: none;
+  border-radius: 0px;
+  box-sizing: border-box;
+}
+.cn-textarea:focus {
+  border-color: var(--clr-primary);
+}
+.cn-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.cn-saved-tag { font-size: 11px; font-weight: 800; color: var(--clr-success-text); }
+.cn-hint { font-size: 10px; color: var(--clr-text-subtle); margin-left: auto; }
 
 /* ---- Action Buttons ---- */
 .cta-wrap { padding: 20px 16px; }
