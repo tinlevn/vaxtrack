@@ -82,6 +82,34 @@
       </div>
     </div>
 
+    <!-- Filter & Search Console -->
+    <div class="filter-console">
+      <div class="fc-search">
+        <span class="fc-search-icon">🔍</span>
+        <input
+          v-model="searchQuery"
+          type="search"
+          placeholder="Search vaccines, diseases, notes..."
+          class="fc-input"
+          aria-label="Search vaccines, diseases, notes"
+        />
+        <button v-if="searchQuery" class="fc-clear-btn" @click="searchQuery = ''">✕</button>
+      </div>
+
+      <div class="fc-status-group" role="group" aria-label="Filter by status">
+        <button
+          v-for="s in statusOptions"
+          :key="s.value"
+          class="fc-status-btn"
+          :class="[s.value, { active: statusFilter === s.value }]"
+          @click="statusFilter = s.value"
+        >
+          <span class="fc-dot"></span>
+          <span>{{ s.label }}</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Age group filter tabs (Clinical Tabs) -->
     <div class="section-label">FILTER BY AGE COHORT</div>
     <div class="age-tabs" role="tablist" aria-label="Age cohort filter">
@@ -98,7 +126,12 @@
 
     <!-- Timeline header & navigation legend -->
     <div class="timeline-header-bar">
-      <div class="section-label-inner">CHRONOLOGICAL VISIT TIMELINE</div>
+      <div class="section-label-inner">
+        CHRONOLOGICAL VISIT TIMELINE
+        <span v-if="filteredVisits.length !== visits.length" class="filter-count-badge">
+          SHOWING {{ filteredVisits.length }} OF {{ visits.length }}
+        </span>
+      </div>
       <div class="snake-flow-legend" aria-hidden="true">
         <span class="legend-pill"><span class="legend-arrow">►</span> EASTBOUND</span>
         <span class="legend-pill"><span class="legend-arrow">▼</span> NEXT CYCLE</span>
@@ -106,8 +139,16 @@
       </div>
     </div>
 
+    <!-- Empty search result alert -->
+    <div v-if="filteredVisits.length === 0" class="empty-timeline-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title">No Matching Immunization Records Found</div>
+      <div class="empty-sub">Try broadening your search term or status filter criteria.</div>
+      <button class="empty-reset-btn" @click="resetFilters">RESET SEARCH & FILTERS</button>
+    </div>
+
     <!-- DESKTOP SNAKE TIMELINE (>= 860px) -->
-    <div class="desktop-snake-timeline" role="region" aria-label="Sequential snake vaccination timeline">
+    <div v-else class="desktop-snake-timeline" role="region" aria-label="Sequential snake vaccination timeline">
       <div class="snake-start-marker">
         <span class="start-dot">●</span>
         <span class="start-text">CLINICAL SEQUENCE START · AT BIRTH RECORD</span>
@@ -115,7 +156,7 @@
       </div>
 
       <template v-for="(row, rIdx) in snakeRows" :key="row.rowIndex">
-        <!-- Row of 3 Cards -->
+        <!-- Row of 4 Cards -->
         <div class="snake-row" :class="{ 'row-reversed': row.isReversed }">
           <div
             v-for="item in row.visits"
@@ -176,7 +217,7 @@
     </div>
 
     <!-- MOBILE VERTICAL TIMELINE (< 860px) -->
-    <ol class="mobile-timeline" role="list" aria-label="Vertical vaccination timeline">
+    <ol v-if="filteredVisits.length > 0" class="mobile-timeline" role="list" aria-label="Vertical vaccination timeline">
       <TimelineCard
         v-for="(visit, i) in filteredVisits" :key="'mob-' + visit.id"
         :visit="visit"
@@ -201,13 +242,31 @@ import ProgressRing from '@/components/ProgressRing.vue'
 import TimelineCard from '@/components/TimelineCard.vue'
 
 const router = useRouter()
-const { visits, doneVisits, overdueVisits, upcomingVisits, progressPct, nextDue, ageGroups } = useSchedule()
+const {
+  visits,
+  doneVisits,
+  overdueVisits,
+  upcomingVisits,
+  progressPct,
+  nextDue,
+  ageGroups,
+  searchQuery,
+  statusFilter,
+  filterVisits,
+} = useSchedule()
 const { toggleTheme, isDark } = useTheme()
 
 const activeGroup = ref('All')
-const filteredVisits = computed(() =>
-  activeGroup.value === 'All' ? visits : visits.filter(v => v.ageGroup === activeGroup.value)
-)
+
+const statusOptions = [
+  { value: 'all', label: 'All Status' },
+  { value: 'done', label: 'Done' },
+  { value: 'due-soon', label: 'Due Soon / Overdue' },
+  { value: 'upcoming', label: 'Upcoming' },
+]
+
+const filteredVisits = computed(() => filterVisits(visits, activeGroup.value))
+
 const pendingCount = (g) =>
   visits.filter(v => (g === 'All' || v.ageGroup === g) && v.status !== 'done').length
 
@@ -216,13 +275,14 @@ const getGlobalSeq = (visitId, fallbackIdx) => {
   return idx >= 0 ? idx + 1 : fallbackIdx + 1
 }
 
+function resetFilters() {
+  searchQuery.value = ''
+  statusFilter.value = 'all'
+  activeGroup.value = 'All'
+}
+
 /**
  * Snake Rows Computation (4 columns per row on desktop):
- * Row 0 (even): L-to-R (Cols 1 -> 2 -> 3 -> 4)
- * Row 1 (odd):  R-to-L (Cols 4 -> 3 -> 2 -> 1)
- * Row 2 (even): L-to-R (Cols 1 -> 2 -> 3 -> 4)
- * Row 3 (odd):  R-to-L (Cols 4 -> 3 -> 2 -> 1)
- * Connected via downward pipes at Col 4 (turn right) and Col 1 (turn left).
  */
 const snakeRows = computed(() => {
   const result = []
@@ -421,10 +481,104 @@ const snakeRows = computed(() => {
 }
 .ndb-arrow { font-size: 20px; color: var(--clr-warning); }
 
+/* Filter Console */
+.filter-console {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 16px 0;
+}
+
+.fc-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.fc-search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 14px;
+  color: var(--clr-text-muted);
+  pointer-events: none;
+}
+.fc-input {
+  width: 100%;
+  padding: 10px 36px 10px 36px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text);
+  border-radius: 0px;
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+  box-shadow: var(--shadow);
+}
+.fc-input:focus {
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 2px var(--clr-primary-light);
+}
+.fc-clear-btn {
+  position: absolute;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--clr-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.fc-status-group {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fc-status-group::-webkit-scrollbar { display: none; }
+
+.fc-status-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: 0px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .12s ease;
+}
+.fc-status-btn:hover {
+  background: var(--clr-surface-muted);
+  color: var(--clr-text);
+}
+.fc-status-btn.active {
+  background: var(--clr-surface);
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+  font-weight: 800;
+  box-shadow: var(--shadow);
+}
+.fc-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--clr-text-subtle);
+  border-radius: 0px;
+}
+.fc-status-btn.done .fc-dot { background: var(--clr-success); }
+.fc-status-btn.due-soon .fc-dot { background: var(--clr-warning); }
+.fc-status-btn.upcoming .fc-dot { background: var(--clr-upcoming); }
+
 .section-label {
   font-size: 10px; font-weight: 800;
   text-transform: uppercase; letter-spacing: .1em;
-  color: var(--clr-text-subtle); padding: 22px 16px 8px;
+  color: var(--clr-text-subtle); padding: 18px 16px 8px;
 }
 
 /* Age Tabs (Sharp Rectangular Segments) */
@@ -468,7 +622,7 @@ const snakeRows = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 16px 10px;
+  padding: 18px 16px 10px;
 }
 .section-label-inner {
   font-size: 10px;
@@ -476,7 +630,19 @@ const snakeRows = computed(() => {
   text-transform: uppercase;
   letter-spacing: .1em;
   color: var(--clr-text-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+.filter-count-badge {
+  background: var(--clr-primary-light);
+  border: 1px solid var(--clr-primary-border);
+  color: var(--clr-primary);
+  padding: 1px 6px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
 .snake-flow-legend {
   display: none;
   align-items: center;
@@ -498,6 +664,34 @@ const snakeRows = computed(() => {
 .legend-arrow {
   color: var(--clr-primary);
   font-weight: 900;
+}
+
+/* Empty State */
+.empty-timeline-state {
+  margin: 20px 16px;
+  padding: 32px 20px;
+  background: var(--clr-surface);
+  border: 1px dashed var(--clr-border-strong);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.empty-icon { font-size: 32px; }
+.empty-title { font-size: 15px; font-weight: 800; color: var(--clr-text); }
+.empty-sub { font-size: 12px; color: var(--clr-text-muted); }
+.empty-reset-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: var(--clr-primary-light);
+  border: 1px solid var(--clr-primary);
+  color: var(--clr-primary);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
 }
 
 /* Mobile Vertical Timeline (Strictly phone screens < 600px) */
@@ -525,9 +719,16 @@ const snakeRows = computed(() => {
   .stat-card.stat-progress { display: block; }
   .next-due-banner{ margin: 18px 28px 0; }
   .ndb-action     { display: flex; }
-  .section-label  { padding: 24px 28px 8px; }
+  .filter-console {
+    margin: 18px 28px 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .fc-search { max-width: 380px; }
+  .section-label  { padding: 22px 28px 8px; }
   .age-tabs       { padding: 0 28px 14px; }
-  .timeline-header-bar { padding: 24px 28px 12px; }
+  .timeline-header-bar { padding: 22px 28px 12px; }
 
   /* Activate Snake Timeline on all desktop/tablet viewports */
   .mobile-timeline {
@@ -703,6 +904,7 @@ const snakeRows = computed(() => {
   .desktop-header { padding: 28px 36px 0; }
   .stats-strip    { margin: 20px 36px 0; }
   .next-due-banner{ margin: 20px 36px 0; }
+  .filter-console { margin: 20px 36px 0; }
   .timeline-header-bar { padding: 24px 36px 12px; }
   .age-tabs       { padding: 0 36px 16px; }
   .desktop-snake-timeline {

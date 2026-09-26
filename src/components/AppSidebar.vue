@@ -51,6 +51,14 @@
       <div class="nd-date">Target: {{ fmtDate(nextDue.targetDate) }}</div>
     </div>
 
+    <!-- Export Report Quick Button -->
+    <div class="sidebar-export-wrap">
+      <button class="export-report-btn" @click="showPrintModal = true">
+        <span class="er-icon">🖨️</span>
+        <span class="er-text">EXPORT / PRINT LOG</span>
+      </button>
+    </div>
+
     <!-- Navigation (Clinical Sections) -->
     <nav class="sidebar-nav">
       <RouterLink class="nav-link" :to="{ name: 'home' }">
@@ -95,20 +103,27 @@
     <div class="sidebar-footer">
       <span class="footer-dot"></span> CDC / ACIP Pediatric Standards
     </div>
+
+    <!-- Print Modal -->
+    <PrintModal :isOpen="showPrintModal" @close="showPrintModal = false" />
   </aside>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSchedule } from '@/composables/useSchedule.js'
 import { useTheme } from '@/composables/useTheme.js'
 import { fmtDate, babyAgeLabel } from '@/composables/useFormatters.js'
 import { BABY } from '@/data/schedule.js'
 import ProgressRing from '@/components/ProgressRing.vue'
+import PrintModal from '@/components/PrintModal.vue'
 
 const router = useRouter()
 const { doneVisits, overdueVisits, upcomingVisits, progressPct, nextDue } = useSchedule()
 const { theme, setTheme } = useTheme()
+
+const showPrintModal = ref(false)
 </script>
 
 <style scoped>
@@ -206,6 +221,30 @@ const { theme, setTheme } = useTheme()
 .nd-tag   { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--clr-warning-text); margin-bottom: 3px; }
 .nd-title { font-size: 13px; font-weight: 800; color: var(--clr-text); }
 .nd-date  { font-size: 11px; color: var(--clr-text-muted); margin-top: 2px; }
+
+.sidebar-export-wrap {
+  padding: 0 16px 10px;
+}
+.export-report-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-primary);
+  color: var(--clr-primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all .12s ease;
+}
+.export-report-btn:hover {
+  background: var(--clr-primary-light);
+}
 
 .sidebar-nav {
   display: flex;
@@ -320,4 +359,3 @@ const { theme, setTheme } = useTheme()
   border-radius: 0px;
 }
 </style>
-
