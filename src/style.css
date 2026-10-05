@@ -1,6 +1,6 @@
 /* ==========================================================================
-   VaxTrack Design System — Hospital-Inspired, Medical / Clinical Rectangular Theme
-   Supports 1440p Full Width Expansion, Tasteful Light & Dark Modes
+   VaxTrack Design System — High-Tech Medical Telemetry Rectangular Theme
+   Strict 0px Geometry (NO rounded corners) with Crisp Sharp Pop Effects
    ========================================================================== */
 
 /* --- Reset & Layout Foundation --- */
@@ -12,130 +12,130 @@
 
 :root {
   /* Medical / Clinical Typography & Spacing */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Strict Squared Geometry (Hospital / Clinical EMR Aesthetic) */
   --sidebar-width: 290px;
-  --radius: 0px;
-  --radius-sm: 0px;
-  --radius-full: 0px;
+  --radius: 0px !important;
+  --radius-sm: 0px !important;
+  --radius-full: 0px !important;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
   /* ========================================================================
-     Tasteful Medical Light Theme (Sterile / Hospital Chart Aesthetic)
-     Clean clinical slate surfaces, medical teal & clinical status card backgrounds
+     Vibrant Medical Light Theme (Crisp High-Contrast Clinical Slate)
+     Vibrant teal, bold sharp offset shadows, clear pop accents
      ======================================================================== */
-  --clr-bg: #edf2f7;
+  --clr-bg: #e2e8f0;
   --clr-surface: #ffffff;
-  --clr-surface-muted: #f8fafc;
-  --clr-border: #cbd5e1;
-  --clr-border-subtle: #e2e8f0;
-  --clr-border-strong: #94a3b8;
-  --clr-text: #0f172a;
-  --clr-text-muted: #475569;
-  --clr-text-subtle: #64748b;
+  --clr-surface-muted: #f1f5f9;
+  --clr-border: #94a3b8;
+  --clr-border-subtle: #cbd5e1;
+  --clr-border-strong: #0f172a;
+  --clr-text: #020617;
+  --clr-text-muted: #334155;
+  --clr-text-subtle: #475569;
 
   /* Hospital Medical Teal & Clinical Slate */
-  --clr-primary: #0f766e;
-  --clr-primary-hover: #115e59;
-  --clr-primary-light: #f0fdfa;
-  --clr-primary-border: #99f6e4;
+  --clr-primary: #0d9488;
+  --clr-primary-hover: #0f766e;
+  --clr-primary-light: #ccfbf1;
+  --clr-primary-border: #14b8a6;
 
   /* Clinical Status Tones */
   --clr-success: #059669;
-  --clr-success-light: #ecfdf5;
+  --clr-success-light: #d1fae5;
   --clr-success-text: #065f46;
-  --clr-success-border: #a7f3d0;
+  --clr-success-border: #10b981;
 
   --clr-warning: #d97706;
-  --clr-warning-light: #fffbeb;
+  --clr-warning-light: #fef3c7;
   --clr-warning-text: #92400e;
-  --clr-warning-border: #fde68a;
+  --clr-warning-border: #f59e0b;
 
   --clr-danger: #dc2626;
-  --clr-danger-light: #fef2f2;
+  --clr-danger-light: #fee2e2;
   --clr-danger-text: #991b1b;
-  --clr-danger-border: #fecaca;
+  --clr-danger-border: #ef4444;
 
   --clr-upcoming: #0284c7;
-  --clr-upcoming-light: #f0f9ff;
+  --clr-upcoming-light: #e0f2fe;
   --clr-upcoming-text: #0369a1;
-  --clr-upcoming-border: #bae6fd;
+  --clr-upcoming-border: #38bdf8;
 
   /* Full Card Backgrounds & Borders by Status (Light Mode) */
-  --clr-card-done-bg: #eaf6ef;
-  --clr-card-done-border: #a3dfbf;
-  --clr-card-overdue-bg: #fdf1f1;
-  --clr-card-overdue-border: #fca5a5;
+  --clr-card-done-bg: #ecfdf5;
+  --clr-card-done-border: #10b981;
+  --clr-card-overdue-bg: #fef2f2;
+  --clr-card-overdue-border: #ef4444;
   --clr-card-due-soon-bg: #fffbeb;
-  --clr-card-due-soon-border: #fde68a;
-  --clr-card-upcoming-bg: #f0f7ff;
-  --clr-card-upcoming-border: #bfdbfe;
+  --clr-card-due-soon-border: #f59e0b;
+  --clr-card-upcoming-bg: #f0f9ff;
+  --clr-card-upcoming-border: #38bdf8;
 
-  /* Flat, Clean Clinical Shadows */
-  --shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  --shadow-card: 0 2px 4px rgba(15, 23, 42, 0.06);
-  --shadow-hover: 0 4px 8px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 6px 12px rgba(15, 23, 42, 0.1);
+  /* Sharp High-Contrast Offset Pop Shadows */
+  --shadow: 2px 2px 0px rgba(15, 23, 42, 0.15);
+  --shadow-card: 3px 3px 0px rgba(15, 23, 42, 0.2);
+  --shadow-hover: 4px 4px 0px var(--clr-primary);
+  --shadow-lg: 5px 5px 0px var(--clr-border-strong);
 
   color-scheme: light;
 }
 
 /* ==========================================================================
-   Dark Theme (Medical Monitor / Clinical Telemetry Console)
+   Dark Theme (High-Tech Telemetry Neon Console)
    ========================================================================== */
 :root[data-theme="dark"] {
-  --clr-bg: #090d16;
-  --clr-surface: #0f172a;
-  --clr-surface-muted: #162035;
-  --clr-border: #24324d;
-  --clr-border-subtle: #1a2438;
-  --clr-border-strong: #3b4e70;
+  --clr-bg: #030712;
+  --clr-surface: #0b1329;
+  --clr-surface-muted: #111c38;
+  --clr-border: #1e293b;
+  --clr-border-subtle: #1e293b;
+  --clr-border-strong: #38bdf8;
   --clr-text: #f8fafc;
-  --clr-text-muted: #94a3b8;
-  --clr-text-subtle: #64748b;
+  --clr-text-muted: #cbd5e1;
+  --clr-text-subtle: #94a3b8;
 
   --clr-primary: #2dd4bf;
   --clr-primary-hover: #5eead4;
-  --clr-primary-light: rgba(45, 212, 191, 0.12);
-  --clr-primary-border: rgba(45, 212, 191, 0.35);
+  --clr-primary-light: rgba(45, 212, 191, 0.18);
+  --clr-primary-border: #2dd4bf;
 
   --clr-success: #34d399;
-  --clr-success-light: rgba(52, 211, 153, 0.12);
+  --clr-success-light: rgba(52, 211, 153, 0.18);
   --clr-success-text: #6ee7b7;
-  --clr-success-border: rgba(52, 211, 153, 0.3);
+  --clr-success-border: #34d399;
 
   --clr-warning: #fbbf24;
-  --clr-warning-light: rgba(251, 191, 36, 0.12);
+  --clr-warning-light: rgba(251, 191, 36, 0.18);
   --clr-warning-text: #fde68a;
-  --clr-warning-border: rgba(251, 191, 36, 0.3);
+  --clr-warning-border: #fbbf24;
 
   --clr-danger: #f87171;
-  --clr-danger-light: rgba(248, 113, 113, 0.12);
+  --clr-danger-light: rgba(248, 113, 113, 0.22);
   --clr-danger-text: #fca5a5;
-  --clr-danger-border: rgba(248, 113, 113, 0.3);
+  --clr-danger-border: #f87171;
 
   --clr-upcoming: #38bdf8;
-  --clr-upcoming-light: rgba(56, 189, 248, 0.12);
+  --clr-upcoming-light: rgba(56, 189, 248, 0.18);
   --clr-upcoming-text: #7dd3fc;
-  --clr-upcoming-border: rgba(56, 189, 248, 0.3);
+  --clr-upcoming-border: #38bdf8;
 
   /* Full Card Backgrounds & Borders by Status (Dark Mode) */
-  --clr-card-done-bg: rgba(16, 185, 129, 0.13);
-  --clr-card-done-border: rgba(52, 211, 153, 0.35);
-  --clr-card-overdue-bg: rgba(239, 68, 68, 0.16);
-  --clr-card-overdue-border: rgba(248, 113, 113, 0.38);
-  --clr-card-due-soon-bg: rgba(245, 158, 11, 0.14);
-  --clr-card-due-soon-border: rgba(251, 191, 36, 0.35);
-  --clr-card-upcoming-bg: rgba(14, 116, 144, 0.13);
-  --clr-card-upcoming-border: rgba(56, 189, 248, 0.3);
+  --clr-card-done-bg: rgba(16, 185, 129, 0.16);
+  --clr-card-done-border: #34d399;
+  --clr-card-overdue-bg: rgba(239, 68, 68, 0.22);
+  --clr-card-overdue-border: #f87171;
+  --clr-card-due-soon-bg: rgba(245, 158, 11, 0.18);
+  --clr-card-due-soon-border: #fbbf24;
+  --clr-card-upcoming-bg: rgba(14, 116, 144, 0.18);
+  --clr-card-upcoming-border: #38bdf8;
 
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.5);
-  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.65);
-  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.75);
+  --shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  --shadow-card: 3px 3px 0px rgba(0, 0, 0, 0.9);
+  --shadow-hover: 4px 4px 0px var(--clr-primary);
+  --shadow-lg: 5px 5px 0px var(--clr-primary-border);
 
   color-scheme: dark;
 }
@@ -153,6 +153,11 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Force 0px border radius across all interactive elements */
+*, *::before, *::after, button, input, textarea, select, div, span {
+  border-radius: 0px !important;
 }
 
 /* Full Width App Shell Root — Expands completely on 1440p */
@@ -196,7 +201,6 @@ button {
 }
 ::-webkit-scrollbar-thumb {
   background-color: var(--clr-border);
-  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--clr-text-muted);
@@ -214,15 +218,15 @@ button {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 2px 7px;
-  border-radius: 0px;
+  padding: 3px 8px;
   line-height: 1.3;
   white-space: nowrap;
   border: 1px solid transparent;
   background: #ffffff;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.15);
 }
 :root[data-theme="dark"] .status-pill {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.95);
 }
 .status-pill.done {
   color: var(--clr-success-text);
@@ -235,10 +239,16 @@ button {
 .status-pill.overdue {
   color: var(--clr-danger-text);
   border-color: var(--clr-danger-border);
+  animation: pulseOverdue 2s infinite;
 }
 .status-pill.upcoming {
   color: var(--clr-upcoming-text);
   border-color: var(--clr-upcoming-border);
+}
+
+@keyframes pulseOverdue {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
 }
 
 /* Rectangular Clinical Vaccine Chips */
@@ -248,22 +258,24 @@ button {
   gap: 4px;
   font-size: 11px;
   font-weight: 700;
-  border-radius: 0px;
   padding: 3px 8px;
   border: 1px solid transparent;
   background: #ffffff;
   transition: all 0.12s ease;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
 :root[data-theme="dark"] .chip {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.85);
 }
 .chip.given {
   color: var(--clr-success-text);
   border-color: var(--clr-success-border);
+  background: var(--clr-success-light);
 }
 .chip.missed {
   color: var(--clr-danger-text);
   border-color: var(--clr-danger-border);
+  background: var(--clr-danger-light);
 }
 .chip.pending {
   color: var(--clr-text-muted);
